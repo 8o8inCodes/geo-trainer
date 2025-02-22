@@ -4,6 +4,7 @@ import { useCapitalCityGame } from '../hooks/useCapitalCityGame';
 import styles from './CapitalCityGuesser.module.css';
 import { useState, useEffect, useRef } from 'react';
 import Confetti from 'react-confetti';
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 const CapitalCityGuesser = () => {
   const { 
@@ -177,10 +178,24 @@ const CapitalCityGuesser = () => {
       <div className={styles.gameLayout}>
         <Card>
           <h2 className={styles.title}>Question:</h2>
-          <p className={`${styles.question} ${isCorrect ? styles.correct : ''}`}>
-            {question}
-            <span className={styles.points}> (Knowledge Points: {currentCountryPoints})</span>
-          </p>
+          <div className={styles.questionContainer}>
+            <p className={`${styles.question} ${isCorrect ? styles.correct : ''}`}>
+              {question}
+            </p>
+            <Tooltip.Provider delayDuration={300}>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <div className={styles.points}>{currentCountryPoints}</div>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content className={styles.tooltipContent} sideOffset={5}>
+                    Knowledge Points
+                    <Tooltip.Arrow className={styles.tooltipArrow} />
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
+          </div>
           <div className={styles.optionsGrid}>
             {options?.map((option) => (
               <button

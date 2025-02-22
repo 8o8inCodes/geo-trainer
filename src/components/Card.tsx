@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import styles from './Card.module.css';
 
 interface CardProps {
   children: ReactNode;
@@ -6,7 +7,7 @@ interface CardProps {
 
 const Card = ({ children }: CardProps) => {
   return (
-    <div className="bg-gray-800 rounded-lg shadow-xl p-6 border border-gray-700">
+    <div className={styles.container}>
       {children}
     </div>
   );
