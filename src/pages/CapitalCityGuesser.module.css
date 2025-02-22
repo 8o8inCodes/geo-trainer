@@ -1,8 +1,7 @@
 .container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background-color: #1a202c;
   min-height: 100vh;
 }
 
@@ -76,4 +75,21 @@
 .wrongOption:hover {
   background-color: #c53030;
   transform: none;
+}
+
+.gameLayout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .gameLayout {
+    flex-direction: column;
+  }
+
+  .container {
+    padding: 1rem;
+  }
 }
