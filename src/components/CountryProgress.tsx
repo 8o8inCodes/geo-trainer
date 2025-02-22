@@ -7,13 +7,15 @@ interface CountryProgressProps {
     country: string;
     points: number;
   }>;
+  onReset: () => void;
 }
 
 const HIGH_KNOWLEDGE_THRESHOLD = 8;
 
-const CountryProgress = ({ countries }: CountryProgressProps) => {
+const CountryProgress = ({ countries, onReset }: CountryProgressProps) => {
   const [isAPressed, setIsAPressed] = useState(false);
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -41,12 +43,49 @@ const CountryProgress = ({ countries }: CountryProgressProps) => {
     return countriesData.find(c => c.country === country)?.city;
   };
 
+  const handleReset = () => {
+    setShowConfirmation(true);
+  };
+
+  const confirmReset = () => {
+    onReset();
+    setShowConfirmation(false);
+  };
+
   const sortedCountries = [...countries].sort((a, b) => b.points - a.points);
   const masteredCount = countries.filter(c => c.points >= HIGH_KNOWLEDGE_THRESHOLD).length;
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Active Countries</h2>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Active Countries</h2>
+        <button 
+          onClick={handleReset} 
+          className={styles.resetButton}
+          title="Reset all progress"
+        >
+          Reset
+        </button>
+      </div>
+      {showConfirmation && (
+        <div className={styles.confirmation}>
+          <p>Are you sure you want to reset all progress?</p>
+          <div className={styles.confirmButtons}>
+            <button 
+              onClick={confirmReset}
+              className={`${styles.resetButton} ${styles.confirmButton}`}
+            >
+              Yes, reset
+            </button>
+            <button 
+              onClick={() => setShowConfirmation(false)}
+              className={styles.cancelButton}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
       <div className={styles.summary}>
         <span>Mastered: {masteredCount}/{countries.length}</span>
         <span className={styles.threshold}>Mastery at: {HIGH_KNOWLEDGE_THRESHOLD} points</span>

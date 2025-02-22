@@ -237,6 +237,19 @@ export const useCapitalCityGame = () => {
     })).sort((a, b) => b.points - a.points);
   }, [activeCountries, progress]);
 
+  const resetProgress = useCallback(() => {
+    setProgress([]);
+    const initialCountries = shuffleArray(validCountries).slice(0, INITIAL_COUNTRIES_COUNT);
+    setActiveCountries(initialCountries);
+    setRecentlyAskedCountries([]);
+    generateNewQuestion();
+    
+    toast.success('Progress reset successfully', {
+      duration: 3000,
+      position: 'bottom-center'
+    });
+  }, [generateNewQuestion]);
+
   return {
     question: currentQuestion?.question,
     options: currentQuestion?.options,
@@ -247,6 +260,7 @@ export const useCapitalCityGame = () => {
     progress,
     activeCountriesCount: activeCountries.length,
     currentCountryPoints: getCurrentCountryPoints(),
+    resetProgress,
     activeCountries: getActiveCountriesProgress()
   };
 };

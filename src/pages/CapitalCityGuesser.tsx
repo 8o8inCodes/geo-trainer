@@ -13,7 +13,8 @@ const CapitalCityGuesser = () => {
     correctAnswer, 
     selectedAnswer, 
     currentCountryPoints,
-    activeCountries
+    activeCountries,
+    resetProgress
   } = useCapitalCityGame();
 
   const [isSPressed, setIsSPressed] = useState(false);
@@ -76,7 +77,7 @@ const CapitalCityGuesser = () => {
             ))}
           </div>
         </Card>
-        <CountryProgress countries={activeCountries} />
+        <CountryProgress countries={activeCountries} onReset={resetProgress} />
       </div>
     </div>
   )
