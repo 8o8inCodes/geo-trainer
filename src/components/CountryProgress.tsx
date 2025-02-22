@@ -111,19 +111,6 @@ const CountryProgress = ({ countries, onReset }: CountryProgressProps) => {
     }
   };
 
-  const getSortIcon = () => {
-    switch (sortOrder) {
-      case 'points-desc':
-        return '↓ Points';
-      case 'points-asc':
-        return '↑ Points';
-      case 'name':
-        return 'A-Z';
-      default:
-        return 'Sort';
-    }
-  };
-
   const sortedCountries = getSortedCountries();
   const masteredCount = countries.filter(c => c.points >= HIGH_KNOWLEDGE_THRESHOLD).length;
 
