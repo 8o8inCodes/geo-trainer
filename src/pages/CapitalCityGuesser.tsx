@@ -2,6 +2,7 @@ import Card from '../components/Card';
 import CountryProgress from '../components/CountryProgress';
 import { useCapitalCityGame } from '../hooks/useCapitalCityGame';
 import styles from './CapitalCityGuesser.module.css';
+import { useState, useEffect } from 'react';
 
 const CapitalCityGuesser = () => {
   const { 
@@ -15,8 +16,37 @@ const CapitalCityGuesser = () => {
     activeCountries
   } = useCapitalCityGame();
 
+  const [isSPressed, setIsSPressed] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 's') {
+        setIsSPressed(true);
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 's') {
+        setIsSPressed(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
   const getButtonClass = (option: string) => {
-    if (!selectedAnswer) return styles.option;
+    if (!selectedAnswer) {
+      if (isSPressed && option === correctAnswer) {
+        return `${styles.option} ${styles.highlightedOption}`;
+      }
+      return styles.option;
+    }
     if (option === correctAnswer && isCorrect) return `${styles.option} ${styles.correctOption}`;
     if (option === selectedAnswer && !isCorrect) return `${styles.option} ${styles.wrongOption}`;
     return styles.option;

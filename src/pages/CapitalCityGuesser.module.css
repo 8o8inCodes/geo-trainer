@@ -55,6 +55,18 @@
   transform: translateY(0);
 }
 
+.highlightedOption {
+  background-color: #4c51bf;
+  border-color: #5a67d8;
+  box-shadow: 0 0 0 2px #5a67d8;
+  transform: translateY(-1px);
+}
+
+.highlightedOption:hover {
+  background-color: #4c51bf;
+  transform: translateY(-1px);
+}
+
 .correctOption {
   background-color: #2f855a;
   border-color: #38a169;
