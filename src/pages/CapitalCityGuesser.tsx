@@ -3,6 +3,7 @@ import CountryProgress from '../components/CountryProgress';
 import { useCapitalCityGame } from '../hooks/useCapitalCityGame';
 import styles from './CapitalCityGuesser.module.css';
 import { useState, useEffect } from 'react';
+import Confetti from 'react-confetti';
 
 const CapitalCityGuesser = () => {
   const { 
@@ -18,6 +19,8 @@ const CapitalCityGuesser = () => {
   } = useCapitalCityGame();
 
   const [isSPressed, setIsSPressed] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [confettiConfig, setConfettiConfig] = useState({ x: 0, y: 0, width: 0, height: 0 });
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -41,6 +44,33 @@ const CapitalCityGuesser = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setShowConfetti(false);
+  }, [question]);
+
+  useEffect(() => {
+    if (showConfetti) {
+      const timer = setTimeout(() => setShowConfetti(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showConfetti, question]);
+
+  useEffect(() => {
+    if (isCorrect) {
+      const correctButton = document.querySelector(`.${styles.correctOption}`) as HTMLElement;
+      if (correctButton) {
+        const rect = correctButton.getBoundingClientRect();
+        setConfettiConfig({
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height
+        });
+      }
+      setShowConfetti(true);
+    }
+  }, [isCorrect]);
+
   const getButtonClass = (option: string) => {
     if (!selectedAnswer) {
       if (isSPressed && option === correctAnswer) {
@@ -55,6 +85,26 @@ const CapitalCityGuesser = () => {
 
   return (
     <div className={styles.container}>
+      {showConfetti && (
+        <Confetti
+          recycle={false}
+          numberOfPieces={100}
+          width={confettiConfig.width}
+          height={confettiConfig.height}
+          tweenDuration={3000}
+          initialVelocityX={4}
+          initialVelocityY={10}
+          gravity={0.3}
+          style={{
+            position: 'fixed',
+            left: confettiConfig.x,
+            top: confettiConfig.y,
+            width: confettiConfig.width,
+            height: confettiConfig.height,
+            pointerEvents: 'none'
+          }}
+        />
+      )}
       <h1 className={styles.title}>Capital City Guesser</h1>
       <p className={styles.subtitle}>Test your knowledge of world capitals!</p>
       <div className={styles.gameLayout}>
