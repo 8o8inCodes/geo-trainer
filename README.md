@@ -1,50 +1,57 @@
-# React + TypeScript + Vite
+# Geo Trainer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, interactive web application for learning world capital cities. Test and improve your geography knowledge through an adaptive quiz system.
 
-Currently, two official plugins are available:
+Note: This project was developed entirely using vscode-insiders Claude 3.5 Sonnet (Preview) Agent. I decided to test the limits of the agent and for the most part it went very smooth. Had very little problems where I've had to deal with. Personally touched zero code. Only prompts.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Capital City Quiz**: Test your knowledge of world capitals with multiple-choice questions
+- **Adaptive Learning System**: 
+  - Start with 5 initial countries
+  - Earn points for correct answers and lose points for incorrect ones
+  - New countries are unlocked when you master the current set (8 points threshold)
+  - 3 new countries are added each time you master a set
+- **Progress Tracking**:
+  - Track your knowledge points for each country
+  - Visual progress indicators
+  - Persistent storage of your progress
+- **Interactive UI**:
+  - Clean, modern interface
+  - Celebration animations for correct answers
+  - Keyboard shortcuts support
+  - Responsive design for all devices
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Getting Started
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
+```
+3. Start the development server:
+```bash
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Screenshots
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+[Coming soon]
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Technology Stack
+
+- React
+- TypeScript
+- Vite
+- CSS Modules
+- Radix UI for tooltips
+- React Hot Toast for notifications
+- React Confetti for celebrations
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+See the [LICENSE](LICENSE) file for details.
