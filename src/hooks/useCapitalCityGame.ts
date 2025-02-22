@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import countriesData from './countriesByCapital.json';
 import toast from 'react-hot-toast';
 
@@ -230,7 +230,7 @@ export const useCapitalCityGame = () => {
     return countryProgress?.points || 0;
   }, [progress, currentQuestion?.country]);
 
-  const getActiveCountriesProgress = useCallback(() => {
+  const getActiveCountriesProgress = useMemo(() => {
     return activeCountries.map(country => ({
       country: country.country,
       points: progress.find(p => p.country === country.country)?.points || 0
@@ -261,6 +261,6 @@ export const useCapitalCityGame = () => {
     activeCountriesCount: activeCountries.length,
     currentCountryPoints: getCurrentCountryPoints(),
     resetProgress,
-    activeCountries: getActiveCountriesProgress()
+    activeCountries: getActiveCountriesProgress
   };
 };
