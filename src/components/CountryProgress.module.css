@@ -8,9 +8,10 @@
 }
 
 .title {
-  margin: 0 0 1rem 0;
+  margin: 0;
   font-size: 1.2rem;
   color: #e2e8f0;
+  line-height: 1;
 }
 
 .summary {
@@ -102,6 +103,26 @@
   background-color: #4a5568;
 }
 
+.tooltipContent {
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: #e2e8f0;
+  background-color: #1a202c;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid #4a5568;
+  animation: tooltipSlide 0.2s ease-out;
+  user-select: none;
+  z-index: 100;
+  transform-origin: var(--radix-tooltip-content-transform-origin);
+}
+
+.tooltipArrow {
+  fill: #1a202c;
+  stroke: #4a5568;
+  stroke-width: 1px;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -113,16 +134,91 @@
   }
 }
 
+@keyframes tooltipSlide {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  gap: 1rem;
 }
 
 .headerButtons {
   display: flex;
   gap: 0.5rem;
+}
+
+.iconButton {
+  padding: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #2d3748;
+  color: #e2e8f0;
+  border: 1px solid #4a5568;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 32px;
+  height: 32px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.iconButton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.iconButton:hover::after {
+  opacity: 1;
+}
+
+.iconButton:active::after {
+  opacity: 0.2;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.iconButton svg {
+  transition: transform 0.2s ease;
+}
+
+.iconButton:hover svg {
+  transform: scale(1.1);
+}
+
+.iconButton:hover {
+  background-color: #4a5568;
+  border-color: #718096;
+  transform: translateY(-1px);
+}
+
+.iconButton:active {
+  transform: translateY(0);
+}
+
+.iconButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #4a5568, 0 0 0 4px rgba(66, 153, 225, 0.6);
+}
+
+.iconButton:focus-visible::after {
+  opacity: 1;
 }
 
 .sortButton {
@@ -146,14 +242,8 @@
 }
 
 .resetButton {
-  padding: 0.4rem 0.8rem;
-  font-size: 0.9rem;
   background-color: #553c3c;
-  color: #e2e8f0;
-  border: 1px solid #744;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  border-color: #744;
 }
 
 .resetButton:hover {
