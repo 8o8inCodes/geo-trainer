@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import countriesData from './countriesByCapital.json';
+import toast from 'react-hot-toast';
 
 interface CountryData {
   country: string;
@@ -19,6 +20,16 @@ interface GameQuestion {
   country: string;
 }
 
+interface StorageData {
+  progress: CountryProgress[];
+  activeCountries: CountryData[];
+}
+
+interface StorageState {
+  version: number;
+  data: StorageData;
+}
+
 const INITIAL_COUNTRIES_COUNT = 5;
 const NEXT_COUNTRIES_BATCH = 3;
 const POINTS_INCREASE = 2;
@@ -26,6 +37,8 @@ const POINTS_DECREASE = 3;
 const HIGH_KNOWLEDGE_THRESHOLD = 8;
 const MIN_POINTS = 0;
 const QUEUE_SIZE = 5;
+const STORAGE_VERSION = 1;
+const STORAGE_KEY = 'geoTrainer';
 
 const shuffleArray = <T,>(array: T[]): T[] => {
   const newArray = [...array];
@@ -39,13 +52,39 @@ const shuffleArray = <T,>(array: T[]): T[] => {
 // Filter out countries with no capital city
 const validCountries = countriesData.filter(country => country.city !== null) as CountryData[];
 
+// Helper functions for storage
+const saveToStorage = (data: StorageData) => {
+  const storageData: StorageState = {
+    version: STORAGE_VERSION,
+    data: data
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(storageData));
+};
+
+const loadFromStorage = (): StorageData | null => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return null;
+
+  const parsed = JSON.parse(saved) as StorageState;
+  if (parsed.version !== STORAGE_VERSION) {
+    localStorage.removeItem(STORAGE_KEY);
+    return null;
+  }
+
+  return parsed.data;
+};
+
 export const useCapitalCityGame = () => {
   const [progress, setProgress] = useState<CountryProgress[]>(() => {
-    const saved = localStorage.getItem('capitalCityProgress');
-    return saved ? JSON.parse(saved) : [];
+    const saved = loadFromStorage();
+    return saved?.progress || [];
   });
 
   const [activeCountries, setActiveCountries] = useState<CountryData[]>(() => {
+    const saved = loadFromStorage();
+    if (saved?.activeCountries) {
+      return saved.activeCountries;
+    }
     const initialCountries = shuffleArray(validCountries).slice(0, INITIAL_COUNTRIES_COUNT);
     return initialCountries;
   });
@@ -110,15 +149,6 @@ export const useCapitalCityGame = () => {
       return (countryProgress?.points || 0) >= HIGH_KNOWLEDGE_THRESHOLD;
     });
 
-    console.log('Checking countries expansion:', {
-      activeCountriesCount: activeCountries.length,
-      allHighKnowledge,
-      progressPoints: activeCountries.map(c => ({
-        country: c.country,
-        points: progress.find(p => p.country === c.country)?.points || 0
-      }))
-    });
-
     if (allHighKnowledge) {
       const existingCountries = new Set(activeCountries.map(c => c.country));
       const availableNewCountries = validCountries.filter(c => !existingCountries.has(c.country));
@@ -127,13 +157,27 @@ export const useCapitalCityGame = () => {
         const newCountries = shuffleArray(availableNewCountries).slice(0, NEXT_COUNTRIES_BATCH);
         setActiveCountries(prev => [...prev, ...newCountries]);
         setRecentlyAskedCountries([]);
+        
+        // Show toast notification
+        toast.success(`Well done! ${NEXT_COUNTRIES_BATCH} new countries added to your quiz!`, {
+          duration: 4000,
+          position: 'bottom-center',
+          style: {
+            background: '#2D3748',
+            color: '#E2E8F0',
+            border: '1px solid #4A5568'
+          },
+        });
       }
     }
   }, [progress, activeCountries]);
 
   useEffect(() => {
-    localStorage.setItem('capitalCityProgress', JSON.stringify(progress));
-  }, [progress]);
+    saveToStorage({
+      progress,
+      activeCountries
+    });
+  }, [progress, activeCountries]);
 
   useEffect(() => {
     checkAndExpandCountries();
