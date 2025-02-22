@@ -10,12 +10,15 @@ interface CountryProgressProps {
   onReset: () => void;
 }
 
+type SortOrder = 'points-desc' | 'points-asc' | 'name';
+
 const HIGH_KNOWLEDGE_THRESHOLD = 8;
 
 const CountryProgress = ({ countries, onReset }: CountryProgressProps) => {
   const [isAPressed, setIsAPressed] = useState(false);
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [sortOrder, setSortOrder] = useState<SortOrder>('points-desc');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -52,20 +55,69 @@ const CountryProgress = ({ countries, onReset }: CountryProgressProps) => {
     setShowConfirmation(false);
   };
 
-  const sortedCountries = [...countries].sort((a, b) => b.points - a.points);
+  const getSortedCountries = () => {
+    const sorted = [...countries];
+    switch (sortOrder) {
+      case 'points-desc':
+        return sorted.sort((a, b) => b.points - a.points);
+      case 'points-asc':
+        return sorted.sort((a, b) => a.points - b.points);
+      case 'name':
+        return sorted.sort((a, b) => a.country.localeCompare(b.country));
+      default:
+        return sorted;
+    }
+  };
+
+  const getNextSortOrder = (): SortOrder => {
+    switch (sortOrder) {
+      case 'points-desc':
+        return 'points-asc';
+      case 'points-asc':
+        return 'name';
+      case 'name':
+        return 'points-desc';
+      default:
+        return 'points-desc';
+    }
+  };
+
+  const getSortIcon = () => {
+    switch (sortOrder) {
+      case 'points-desc':
+        return '↓ Points';
+      case 'points-asc':
+        return '↑ Points';
+      case 'name':
+        return 'A-Z';
+      default:
+        return 'Sort';
+    }
+  };
+
+  const sortedCountries = getSortedCountries();
   const masteredCount = countries.filter(c => c.points >= HIGH_KNOWLEDGE_THRESHOLD).length;
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>Active Countries</h2>
-        <button 
-          onClick={handleReset} 
-          className={styles.resetButton}
-          title="Reset all progress"
-        >
-          Reset
-        </button>
+        <div className={styles.headerButtons}>
+          <button 
+            onClick={() => setSortOrder(getNextSortOrder())}
+            className={styles.sortButton}
+            title="Change sort order"
+          >
+            {getSortIcon()}
+          </button>
+          <button 
+            onClick={handleReset} 
+            className={styles.resetButton}
+            title="Reset all progress"
+          >
+            Reset
+          </button>
+        </div>
       </div>
       {showConfirmation && (
         <div className={styles.confirmation}>
